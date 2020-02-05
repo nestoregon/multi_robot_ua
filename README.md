@@ -1,5 +1,6 @@
 # Multi Robot UA (Tutorial #0)
-Launching multiple turtlbots at the same time.
+2019-20 Multirobot Systems 33736. University of Alicante. Bachelor Degree in Robotics Engineering.
+
 This [tutorial](https://www.theconstructsim.com/ros-qa-130-how-to-launch-multiple-robots-in-gazebo-simulator/) was followed during the development of this project.
 
 ## Requirements
