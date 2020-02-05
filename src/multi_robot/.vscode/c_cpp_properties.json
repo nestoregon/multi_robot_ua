@@ -1,0 +1,16 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "",
+        "limitSymbolsToIncludedHeaders": true
+      },
+      "includePath": [
+        "/home/nestoregon/ROS/installed_packages/turtlebot_3/devel/include",
+        "/opt/ros/melodic/include",
+        "/usr/include"
+      ],
+      "name": "Linux"
+    }
+  ]
+}
