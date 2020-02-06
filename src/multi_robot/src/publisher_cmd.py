@@ -15,6 +15,11 @@ rospy.init_node('publisher_cmd', anonymous=True)
 pub = rospy.Publisher(topic, Twist, queue_size =5)
 rate = rospy.Rate(10) # 0.1 segundo
 
-while(1):
-  movimiento()
-  rate.sleep()
+
+def main():
+  while(1):
+    movimiento()
+    rate.sleep()
+
+if __name__ == "__main__":
+    main()
