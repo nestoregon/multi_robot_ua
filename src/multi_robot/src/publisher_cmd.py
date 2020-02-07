@@ -5,7 +5,6 @@ import sys
 from geometry_msgs.msg import Twist, Pose
 from nav_msgs.msg import Odometry
 
-
 """
 Square movement class
 """
@@ -21,15 +20,16 @@ class square_movement():
     self.vel.angular.z = z
     self.pub_topic_name = str(sys.argv[1]) + '/cmd_vel'
     self.sub_topic_name = str(sys.argv[1]) + '/odom'
-    self.turns_array = [0.7071, 1, 0.7071, 0, -0.7071, -1, -0.7071, 0] # dos vueltas
-    self.turn = self.turns_array[0]
+    self.turn_array = [0.7071, 1, 0.7071, 0, -0.7071, -1, -0.7071, 0] # there are 8 states
+    self.turn_state = 0
+    self.turn_num = self.turn_array[self.turn_state]
     # publishers
     self.pub = rospy.Publisher(self.pub_topic_name, Twist, queue_size = 5)
     # subscribers
     self.sub = rospy.Subscriber(self.sub_topic_name, Odometry, self.callback_odom)
     # rate
     self.rate = rospy.Rate(100) # 0.01 segundos
-    self.state = "paused"
+    self.state = "move_forward"
     self.time = 0
 
 
@@ -47,34 +47,49 @@ class square_movement():
   def turn_left(self):
     print("Turning")
     self.vel.linear.x = 0.0
-    self.vel.angular.z = 0.2
+    self.vel.angular.z = 0.3
     self.pub.publish(self.vel)
+
+  def define_turn_number(self):
+      self.turn_num = self.turn_array[self.turn_state]
+
 
 
   def move(self):
-    self.state = "move_forward"
+
+    self.state = "turn_left"
+    self.move_forward()
+
     while not rospy.is_shutdown():
+      # define variables
+      self.define_turn_number()
+      pose = self.odom.pose.pose.orientation.z
+      print(self.state, self.turn_state, self.turn_num, "Pose is", pose)
+
+      # depending on the state the robot will do different things
+      # for instance: if the state is equal to "move_forward" the 
+      # robot will complete such action
       
-      for item in self.turns_array:
-        pose = self.odom.pose.pose.orientation.z
-        print("waiting to reach", item, "Pose is", pose)
-
-        # move forward state
-        if self.state == "move_forward":
-          if self.time == 100: # wait for 1 second
-            self.state = "turn_left"
-            self.turn_left()
-            self.time = 0
+      # move forward
+      if self.state == "move_forward":
+        if self.time == 400: # 4 seconds going straight
+          self.state = "turn_left"
+          self.time = 0
+        else:
           self.time += 1
+          self.move_forward()
 
-        # turn left state
-        elif self.state == "turn_left":
-          if not(pose-0.05 < item and pose +0.05 > item):
-            self.state = "move_forward"
-            self.move_forward()
-
-        self.rate.sleep()
-        
+      # turn left
+      elif self.state == "turn_left":
+        if (pose-0.005 < self.turn_num and pose +0.005 > self.turn_num):
+          self.state = "move_forward"
+          self.turn_state += 1
+          if self.turn_state == 8:
+            self.turn_state = 0
+        else:
+          self.turn_left()
+      self.rate.sleep() # sleep
+      
     
 
 def main():
