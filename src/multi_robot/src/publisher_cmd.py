@@ -4,6 +4,7 @@ import rospy
 import sys
 from geometry_msgs.msg import Twist, Pose
 from nav_msgs.msg import Odometry
+from tf.transformations import euler_from_quaternion, quaternion_from_euler
 
 
 """
@@ -41,7 +42,7 @@ class square_movement():
     self.vel.angular.z = 0.2
     while 1:
       self.giro()
-      print(self.odom.pose.pose.orientation)
+      print(self.pose.pose.orientation)
       print("----------------")
       self.rate.sleep()
     
