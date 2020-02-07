@@ -42,7 +42,7 @@ class square_movement():
     self.vel.angular.z = 0.2
     while 1:
       self.giro()
-      print(self.pose.pose.orientation)
+      print(self.odom.pose.pose.orientation)
       print("----------------")
       self.rate.sleep()
     
