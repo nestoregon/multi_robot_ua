@@ -45,5 +45,4 @@
     </group>
     <node pkg="multi_robot" type="publisher_cmd.py" name="robot4" args="robot4"/>
 
-
   </launch>
