@@ -1,16 +1,13 @@
 #!/usr/bin/env python
+"""Setting interpreter"""
 
-import rospy
 import sys
-from geometry_msgs.msg import Twist, Pose
+import rospy
+from geometry_msgs.msg import Twist
 from nav_msgs.msg import Odometry
 
-"""
-Square movement class
-"""
-class square_movement():
-
-  """Constructor"""
+class SquareMovement():
+  """Square Movement class"""
   def __init__(self, x=0, z=0):
     # initialize node
     # declare self variables
@@ -33,30 +30,29 @@ class square_movement():
     self.time = 0
 
 
-  """callback function of odometry"""
   def callback_odom(self, msg):
+    """callback function of odometry"""
     # save odometry published value
-    self.odom.pose.pose.orientation = msg.pose.pose.orientation 
+    self.odom.pose.pose.orientation = msg.pose.pose.orientation
 
   def move_forward(self):
-    print("Going on a straight line")
+    """Move in a straight line"""
     self.vel.linear.x = 0.2
     self.vel.angular.z = 0.0
     self.pub.publish(self.vel)
 
   def turn_left(self):
-    print("Turning")
+    """Turn left 90 degrees"""
     self.vel.linear.x = 0.0
     self.vel.angular.z = 0.3
     self.pub.publish(self.vel)
 
   def define_turn_number(self):
-      self.turn_num = self.turn_array[self.turn_state]
-
-
+    """Define the z value for a 90 degree turn"""
+    self.turn_num = self.turn_array[self.turn_state]
 
   def move(self):
-
+    """Funcion to perform the square movement alternating turns and moving forward"""
     self.state = "turn_left"
     self.move_forward()
 
@@ -67,9 +63,9 @@ class square_movement():
       print(self.state, self.turn_state, self.turn_num, "Pose is", pose)
 
       # depending on the state the robot will do different things
-      # for instance: if the state is equal to "move_forward" the 
+      # for instance: if the state is equal to "move_forward" the
       # robot will complete such action
-      
+
       # move forward
       if self.state == "move_forward":
         if self.time == 400: # 4 seconds going straight
@@ -89,17 +85,16 @@ class square_movement():
         else:
           self.turn_left()
       self.rate.sleep() # sleep
-      
-    
 
 def main():
-  movement = square_movement()
+  """Main function"""
+  movement = SquareMovement()
   movement.move()
   rospy.spin()
 
 if __name__ == "__main__":
   # initialize node
-  rospy.init_node('publisher_cmd', anonymous= True)
+  rospy.init_node('publisher_cmd', anonymous=True)
   try:
     main()
   except rospy.ROSInterruptException:
