@@ -8,15 +8,16 @@ from nav_msgs.msg import Odometry
 
 class SquareMovement():
   """Square Movement class"""
-  def __init__(self, x=0, z=0):
+  def __init__(self, robot_name, x=0, z=0):
     # initialize node
     # declare self variables
+    self.robot_name = robot_name
     self.odom = Odometry()
     self.vel = Twist()
     self.vel.linear.x = x
     self.vel.angular.z = z
-    self.pub_topic_name = str(sys.argv[1]) + '/cmd_vel'
-    self.sub_topic_name = str(sys.argv[1]) + '/odom'
+    self.pub_topic_name = self.robot_name + '/cmd_vel'
+    self.sub_topic_name = self.robot_name + '/odom'
     self.turn_array = [0.7071, 1, 0.7071, 0, -0.7071, -1, -0.7071, 0] # there are 8 states
     self.turn_state = 0
     self.turn_num = self.turn_array[self.turn_state]
@@ -88,7 +89,7 @@ class SquareMovement():
 
 def main():
   """Main function"""
-  movement = SquareMovement()
+  movement = SquareMovement(str(sys.argv[1])) # name of the robot
   movement.move()
   rospy.spin()
 
