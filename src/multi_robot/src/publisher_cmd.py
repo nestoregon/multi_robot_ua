@@ -39,7 +39,7 @@ class SquareMovement():
     self.state = "stop"
     self.time = 0
 
-  def callback_custom(self,msg):
+  def callback_custom(self, msg):
     """ Callback function of custom topic """
     self.topic_custom_value = msg.data
 
